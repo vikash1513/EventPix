@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVENTPIX</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <title>Duplicate Photo Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 200px;
+            margin-bottom: 70px;
+            background: linear-gradient(270deg, #e8faf6, #b2f3de);
+            background-size: 400% 400%;
+        
+        }
+        h1 {
+            color: #333;
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-preview img {
+            width: 200px;
+            margin: 10px;
+        }
+  
+  .header {
+    padding: 20px;
+    color: rgb(70, 109, 97);
+  }
+  
+  .footer {
+    color: white;
+  }
+    </style>
+    <script>
+        // Function to display duplicate images
+        function displayDuplicateImages() {
+            var duplicateImages = {{ duplicate_images|safe }};
+            var imagePreviewDiv = document.getElementById('image-preview');
+            imagePreviewDiv.innerHTML = '';
+
+            for (var i = 0; i < duplicateImages.length; i++) {
+                var img = document.createElement('img');
+                img.src = duplicateImages[i];
+                img.alt = 'Duplicate Image';
+                imagePreviewDiv.appendChild(img);
+            }
+        }
+
+        // Call the function to display duplicate images when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            displayDuplicateImages();
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="{{ url_for('index') }}">EVENTPIX</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <h1>Duplicate Photo Detection</h1>
+    <form action="/duplicate_detection" method="post" enctype="multipart/form-data">
+        <label for="folder_path">Select a folder:</label>
+        <input type="file" name="folder_path" id="folder_path" webkitdirectory directory required>
+        <button type="submit">Detect Duplicates</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li style="color: {% if 'danger' in message %}red{% elif 'success' in message %}green{% elif 'warning' in message %}orange{% else %}black{% endif %};">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Display duplicate images -->
+    <h2>Duplicate Images:</h2>
+    <div id="image-preview" class="image-preview"></div>
+    <footer class="bg-dark text-white py-2 fixed-bottom">
+        <div class="container text-center footer">
+            <p>Eventpix</p>
+        </div>
+      </footer>
+      
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
